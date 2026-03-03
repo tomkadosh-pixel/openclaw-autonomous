@@ -1,0 +1,23 @@
+{
+  "skill": {
+    "name": "autonomous",
+    "description": "Autonomous web search, code generation, and GitHub integration",
+    "version": "1.0.0",
+    "enabled": true
+  },
+  "tools": {
+    "web": {
+      "search": {
+        "enabled": true,
+        "provider": "grok"
+      },
+      "fetch": {
+        "enabled": true
+      }
+    }
+  },
+  "github": {
+    "token_env": "GITHUB_TOKEN",
+    "default_repo": "tomkadosh-pixel/openclaw-autonomous"
+  }
+}
