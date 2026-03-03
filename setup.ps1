@@ -21,14 +21,21 @@ if ($apiKey -match "^sk-") {
     exit 1
 }
 
-# 1. Delete old broken config
-$configPath = "$env:USERPROFILE\.openclaw\openclaw.json"
+# 1. Create/open the .openclaw directory FIRST
+$openclawDir = "$env:USERPROFILE\.openclaw"
+if (-not (Test-Path $openclawDir)) {
+    Write-Host "📁 Creating .openclaw directory..." -ForegroundColor Yellow
+    New-Item -ItemType Directory -Path $openclawDir -Force | Out-Null
+}
+
+# 2. Delete old config if exists
+$configPath = "$openclawDir\openclaw.json"
 if (Test-Path $configPath) {
     Write-Host "🗑️  Deleting old config..." -ForegroundColor Yellow
     Remove-Item $configPath -Force
 }
 
-# 2. Create new clean config
+# 3. Create new clean config
 Write-Host "📝 Creating new config..." -ForegroundColor Yellow
 
 $config = @{
@@ -65,7 +72,7 @@ $config = @{
             model = @{
                 primary = "openai/gpt-4o"
             }
-            workspace = "$env:USERPROFILE\.openclaw\workspace"
+            workspace = "$openclawDir\workspace"
             heartbeat = @{
                 every = "30m"
             }
@@ -119,14 +126,14 @@ $config = @{
     }
 }
 
-# 3. Save config
+# 4. Save config
 $config | ConvertTo-Json -Depth 10 | Set-Content $configPath -NoNewline
 
 Write-Host "✅ Config saved!" -ForegroundColor Green
 Write-Host ""
 Write-Host "🔄 Restarting OpenClaw..." -ForegroundColor Yellow
 
-# 4. Restart
+# 5. Restart
 openclaw gateway restart
 
 Write-Host ""
